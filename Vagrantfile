@@ -10,10 +10,10 @@ CONFIG = File.join(File.dirname(__FILE__), "config.rb")
 
 # Defaults for config options defined in CONFIG
 $num_instances = 1
-$update_channel = "alpha"
+$update_channel = "beta"
 $enable_serial_logging = false
 $vb_gui = false
-$vb_memory = 1024
+$vb_memory = 2048
 $vb_cpus = 1
 
 # Attempt to apply the deprecated environment variable NUM_INSTANCES to
@@ -90,13 +90,12 @@ Vagrant.configure("2") do |config|
 
       # Uncomment below to enable NFS for sharing the host machine into the coreos-vagrant VM.
       #config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']
-      config.vm.synced_folder "/Users/bdehamer/dev/panamax-api",
-        "/var/panamax-api", nfs: true, mount_options: ['nolock,vers=3,udp']
-      config.vm.synced_folder "/Users/bdehamer/dev/panamax-scripts",
-        "/var/panamax-scripts", nfs: true, mount_options: ['nolock,vers=3,udp']
+      config.vm.synced_folder "/Users/bdehamer/dev",
+        "/home/core/dev", nfs: true, mount_options: ['nolock,vers=3,udp']
 
-      config.vm.network :forwarded_port, guest: 8888, host: 8888
-      config.vm.network :forwarded_port, guest: 8889, host: 8889
+      [*3001..3010, *8880..8890].each do |port|
+        config.vm.network :forwarded_port, guest: port, host: port
+      end
 
       if File.exist?(CLOUD_CONFIG_PATH)
         config.vm.provision :file, :source => "#{CLOUD_CONFIG_PATH}", :destination => "/tmp/vagrantfile-user-data"

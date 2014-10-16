@@ -10,7 +10,7 @@ CONFIG = File.join(File.dirname(__FILE__), "config.rb")
 
 # Defaults for config options defined in CONFIG
 $num_instances = 1
-$update_channel = "beta"
+$update_channel = "stable"
 $enable_serial_logging = false
 $vb_gui = false
 $vb_memory = 2048
@@ -28,7 +28,7 @@ end
 
 Vagrant.configure("2") do |config|
   config.vm.box = "coreos-%s" % $update_channel
-  config.vm.box_version = ">= 308.0.1"
+  config.vm.box_version = ">= 410.0.0"
   config.vm.box_url = "http://%s.release.core-os.net/amd64-usr/current/coreos_production_vagrant.json" % $update_channel
 
   config.vm.provider :vmware_fusion do |vb, override|
@@ -93,7 +93,7 @@ Vagrant.configure("2") do |config|
       config.vm.synced_folder "/Users/bdehamer/dev",
         "/home/core/dev", nfs: true, mount_options: ['nolock,vers=3,udp']
 
-      [*3001..3010, *8880..8890].each do |port|
+      [4001, 8080, *3001..3010, *8880..8890].each do |port|
         config.vm.network :forwarded_port, guest: port, host: port
       end
 
